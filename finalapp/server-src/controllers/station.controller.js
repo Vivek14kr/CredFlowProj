@@ -18,7 +18,21 @@ router.get("/", async (req, res) => {
     totalPages:Math.ceil(total/PAGE_SIZE)});
 });
 
-router.get("/:citytype", async(req, res)=>{
+router.get("/:_id", async (req, res) => {
+  const PAGE_SIZE = 3;
+  const page = parseInt(req.query.page || "0");
+  const total = await Register.countDocuments();
+  const register = await Register.find(req.params)
+    .limit(PAGE_SIZE)
+    .skip(PAGE_SIZE * page);
+
+    console.log(register)
+  return res
+    .status(201)
+    .send({ register, totalPages: Math.ceil(total / PAGE_SIZE) });
+});
+
+router.get("/citytype/:citytype", async(req, res)=>{
    const PAGE_SIZE = 3;
    const page = parseInt(req.query.page || "0");
    const total = await Register.countDocuments();
@@ -43,6 +57,20 @@ router.get("/cityname/:cityname", async (req, res) => {
     .status(201)
     .send({ register, totalPages: Math.ceil(total / PAGE_SIZE) });
 });
+router.get("/city/:cityname", async (req, res) => {
+  const PAGE_SIZE = 3;
+  const page = parseInt(req.query.page || "0");
+  const total = await Register.countDocuments();
+  console.log(req.params);
+  const register = await Register.find(req.params)
+    .limit(PAGE_SIZE)
+    .skip(PAGE_SIZE * page);
+  return res
+    .status(201)
+    .send({ register, totalPages: Math.ceil(total / PAGE_SIZE) });
+});
+
+
 router.get("/num/:citypopulation", async (req, res) => {
   const PAGE_SIZE = 3;
 

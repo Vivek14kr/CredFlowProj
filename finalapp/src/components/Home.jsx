@@ -1,4 +1,5 @@
 import {useState, useEffect} from "react"
+import { Link } from "react-router-dom";
 import "./Home.css"
 export const Home = ()=>{
 
@@ -15,6 +16,10 @@ const [citysearch, setCitysearch]  = useState("")
  useEffect(()=>{
      getData()
  }, [page])
+
+
+
+
 
  const getData = async ()=>{
      try {
@@ -39,7 +44,7 @@ const [citysearch, setCitysearch]  = useState("")
 
  const handleFilter =async ()=>{
      try {
-       await fetch(`http://localhost:4500/register/${citytype}`)
+       await fetch(`http://localhost:4500/register/citytype/${citytype}`)
          .then((response) => response.json())
          .then((data) => {
            console.log(data,"yhi h")
@@ -121,15 +126,23 @@ const goNext = ()=>{
             type="number"
             placeholder="Number"
           />
-          <button onClick={()=>{
-            handleNum()
-          }}>Apply Changes</button>
+          <button
+            onClick={() => {
+              handleNum();
+            }}
+          >
+            Apply Changes
+          </button>
         </div>
 
         <div>
-          <input onChange={(e)=>{
-            setCitysearch(e.target.value)
-          }} type="text" name="search" />
+          <input
+            onChange={(e) => {
+              setCitysearch(e.target.value);
+            }}
+            type="text"
+            name="search"
+          />
           <button onClick={handleSearch}> Search</button>
         </div>
         <h2>Election Details</h2>
@@ -139,7 +152,7 @@ const goNext = ()=>{
             <label htmlFor="">
               {" "}
               <h2> City: </h2>
-              {item.cityname}
+              <Link to={`/${item.cityname}`}> {item.cityname}</Link>
             </label>
             <label htmlFor="">
               {" "}
