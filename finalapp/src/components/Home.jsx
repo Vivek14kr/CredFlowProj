@@ -87,6 +87,45 @@ const [citysearch, setCitysearch]  = useState("")
      
  }
 
+ const LowSort =async ()=>{
+    try {
+      await fetch(`http://localhost:4500/register?page=${page}`)
+        .then((response) => response.json())
+        .then((data) => {
+          // setTotal(data.totalPages);
+          let info = data.register
+          console.log(info , " info")
+
+          const sorted = info.sort((a, b)=>{
+            return a.citypopulation- b.citypopulation
+          })
+          console.log(sorted)
+          setPolls(sorted);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+ }
+ const HighSort = async ()=>{
+      try {
+        await fetch(`http://localhost:4500/register?page=${page}`)
+          .then((response) => response.json())
+          .then((data) => {
+            // setTotal(data.totalPages);
+            let info = data.register;
+            console.log(info, " info");
+
+            const sorted = info.sort((a, b) => {
+              return b.citypopulation - a.citypopulation;
+            });
+            console.log(sorted);
+            setPolls(sorted);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+ }
+
  const goPrev = () =>{
   setPage(Math.max(0, page - 1))
  }
@@ -133,6 +172,12 @@ const goNext = ()=>{
           >
             Apply Changes
           </button>
+             <hr />
+             <p>Sort according to Population</p>
+          <div>
+            <button onClick={LowSort}>Sort: Low to high</button>
+            <button onClick={HighSort}>Sort: High to low</button>
+          </div>
         </div>
 
         <div>
