@@ -2,7 +2,7 @@ const connect = require("./configs/db");
 
 // const express = require("express");
 
-const app = require(".");
+const app = require("./index.js");
 
 const path = require("path");
 
