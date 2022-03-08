@@ -1,0 +1,32 @@
+.imagee{
+    height: 150px;
+    width: 150px;
+}
+
+.order{
+    display: flex;
+}
+
+#gridview{
+ margin: 5% 7% 5% 5%;
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20%;
+  grid-gap: 8%;
+  justify-content: center;
+  text-align: center;
+  padding-bottom: 50px;
+}
+#gridvieww{
+ margin: 5% 7% 5% 5%;
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20%;
+  grid-gap: 8%;
+  justify-content: center;
+  text-align: center;
+  padding-bottom: 50px;
+}
+#checkout{
+  margin-top: 5%;
+  margin-left: 45%;
+}
+

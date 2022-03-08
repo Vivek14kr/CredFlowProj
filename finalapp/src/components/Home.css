@@ -1,13 +1,22 @@
+.imagee{
+    height: 200px;
+    width: 200px;
+}
+
+#gridview{
+ margin: 5% 7% 5% 5%;
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20%;
+  grid-gap: 8%;
+  justify-content: center;
+  text-align: center;
+  padding-bottom: 50px;
+}
+
 #btns{
+    margin-top: 20%;
+    margin-left: 50%;
+}
+#adbtns{
     display: flex;
-}
-
-.boxes{
-    margin: 20px;
-    background-color: yellow;
-}
-
-#page{
-    margin-left: 5px;
-    margin-right: 5px;
 }

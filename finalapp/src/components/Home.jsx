@@ -1,216 +1,107 @@
-import {useState, useEffect} from "react"
-import { Link } from "react-router-dom";
+import React, {useState, useEffect}from "react"
+import {Link} from "react-router-dom"
+import { Prods } from "./Prods";
 import "./Home.css"
+
 export const Home = ()=>{
 
 
- const [polls, setPolls] = useState([])
-const [page, setPage] = useState(0)
-const [total, setTotal] = useState(0)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [curr, setCurr] = useState(1);
+const [pageNumber, setpagenum] = useState(1)
+  const [prodperPage, setPage] = useState(12)
 
-const [citytype, setCitytype] = useState("")
-const [citypopulation, setNum ] = useState("")
-
-const [citysearch, setCitysearch]  = useState("")
-
- useEffect(()=>{
-     getData()
- }, [page])
-
-
-
-
-
- const getData = async ()=>{
-     try {
-           await fetch(`http://localhost:4500/register?page=${page}`)
-      .then((response) => response.json())
-      .then((data) => {
-
-        setTotal(data.totalPages)
-        setPolls(data.register);
-       
-      })
-     } catch (error) {
-        
-        console.log(error);
-      
-     }
-     
+  useEffect(() => {
   
-   
- }
- console.log(polls, "d")
+    fetchPost()
+  }, []);
 
- const handleFilter =async ()=>{
-     try {
-       await fetch(`http://localhost:4500/register/citytype/${citytype}`)
-         .then((response) => response.json())
-         .then((data) => {
-           console.log(data,"yhi h")
-           setTotal(data.totalPages);
-           setPolls(data.register);
-         });
-     } catch (error) {
-       console.log(error);
-     }
-     
+  const SortHtoLR = async ()=>{
+  const baseURL = "https://api.sampleapis.com/wines/reds";
+  await fetch(baseURL)
+    .then((resp) => resp.json())
+    .then((data) => setProducts(data.sort((a, b)=>{
+      return b.rating.average - a.rating.average
+    })));
+  setLoading(false);
+  }
+  const SortLtoHR = async ()=>{
+     const baseURL = "https://api.sampleapis.com/wines/reds";
+     await fetch(baseURL)
+       .then((resp) => resp.json())
+       .then((data) =>
+         setProducts(
+           data.sort((a, b) => {
+             return a.rating.average - b.rating.average;
+           })
+         )
+       );
+     setLoading(false);
+  }
+
   
- }
-  const handleSearch=async ()=>{
-     try {
-       await fetch(`http://localhost:4500/register/cityname/${citysearch}`)
-         .then((response) => response.json())
-         .then((data) => {
-           console.log(data,"yhi h")
-           setTotal(data.totalPages);
-           setPolls(data.register);
-         });
-     } catch (error) {
-       console.log(error);
-     }
-     
   
- }
- const handleNum = async()=>{
-      try {
-        await fetch(`http://localhost:4500/register/num/${citypopulation}`)
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data, "yhi h");
-            setTotal(data.totalPages);
-            setPolls(data.register);
-          });
-      } catch (error) {
-        console.log(error);
-      }
-     
- }
+  const fetchPost = async () => {
+      const baseURL = "https://api.sampleapis.com/wines/reds";
+      await fetch(baseURL)
+        .then((resp) => resp.json())
+        .then((data) => setProducts(data));
+      setLoading(false);
+    };
 
- const LowSort =async ()=>{
-    try {
-      await fetch(`http://localhost:4500/register?page=${page}`)
-        .then((response) => response.json())
-        .then((data) => {
-          // setTotal(data.totalPages);
-          let info = data.register
-          console.log(info , " info")
+  const indexOfLastPost = curr * prodperPage;
+  const indexOffirst = indexOfLastPost - prodperPage
+  const currprod = products.slice(indexOffirst, indexOfLastPost)
+ console.log(products)
 
-          const sorted = info.sort((a, b)=>{
-            return a.citypopulation- b.citypopulation
-          })
-          console.log(sorted)
-          setPolls(sorted);
-        });
-    } catch (error) {
-      console.log(error);
-    }
+const handlePrev = ()=>{
+  if (pageNumber == 1) return
+  setpagenum(pageNumber - 1)
+  paginate(pageNumber)
  }
- const HighSort = async ()=>{
-      try {
-        await fetch(`http://localhost:4500/register?page=${page}`)
-          .then((response) => response.json())
-          .then((data) => {
-            // setTotal(data.totalPages);
-            let info = data.register;
-            console.log(info, " info");
+ const handleNext = () => {
 
-            const sorted = info.sort((a, b) => {
-              return b.citypopulation - a.citypopulation;
-            });
-            console.log(sorted);
-            setPolls(sorted);
-          });
-      } catch (error) {
-        console.log(error);
-      }
- }
+   setpagenum(pageNumber + 1);
+    paginate(pageNumber);
+ };
+ const paginate = (pageNumber) => setCurr(pageNumber);
+ let [search, setSearch] = useState("")
 
- const goPrev = () =>{
-  setPage(Math.max(0, page - 1))
+ const handleSearch = async ()=>{
+    const baseURL = "https://api.sampleapis.com/wines/reds";
+    await fetch(baseURL)
+      .then((resp) => resp.json())
+      .then((data) =>
+        setProducts(
+          data.filter(item => item.wine == search)
+        )
+      );
+    setLoading(false);
  }
-const goNext = ()=>{
- setPage(Math.min(total-1, page + 1))
-}
-    return (
+  return (
+    <div>
       <div>
         <div>
-          <h1>Filter</h1>
-          <label htmlFor="">Sort By </label>
-          <label htmlFor="">City Type</label>
-          <select
-            onChange={(event) => {
-              setCitytype(event.target.value);
-            }}
-            name="citynametype"
-            id=""
-          >
-            <option value="">Type</option>
-            <option value="Metro">Metro</option>
-            <option value="Town">Town</option>
-            <option value="Village">Village</option>
-          </select>
-          <button
-            onClick={() => {
-              handleFilter();
-            }}
-          >
-            Apply Changes
-          </button>
-          <label htmlFor="">Population less than</label>
-          <input
-            onChange={(event) => {
-              setNum(event.target.value);
-            }}
-            type="number"
-            placeholder="Number"
-          />
-          <button
-            onClick={() => {
-              handleNum();
-            }}
-          >
-            Apply Changes
-          </button>
-             <hr />
-             <p>Sort according to Population</p>
-          <div>
-            <button onClick={LowSort}>Sort: Low to high</button>
-            <button onClick={HighSort}>Sort: High to low</button>
-          </div>
+          <input onChange={(e)=>{
+            setSearch(e.target.value)
+          }} type="text" placeholder="Search"/>
+        <button onClick={handleSearch}>Search</button>
         </div>
-
-        <div>
-          <input
-            onChange={(e) => {
-              setCitysearch(e.target.value);
-            }}
-            type="text"
-            name="search"
-          />
-          <button onClick={handleSearch}> Search</button>
-        </div>
-        <h2>Election Details</h2>
-
-        {polls.map((item) => (
-          <div className="boxes" key={item._id}>
-            <label htmlFor="">
-              {" "}
-              <h2> City: </h2>
-              <Link to={`/${item.cityname}`}> {item.cityname}</Link>
-            </label>
-            <label htmlFor="">
-              {" "}
-              <h1>Station: </h1> {item.pollingstations}
-            </label>
-          </div>
-        ))}
-
-        <div id="btns">
-          <button onClick={goPrev}>Prev</button>
-          <p id="page">{page + 1}</p>
-          <button onClick={goNext}>Next</button>
-        </div>
+        <Link to="/cart">
+          <button>Go to Cart</button>
+        </Link>
+        <button onClick={SortHtoLR}>Sort: Ratings (High To Low)</button>
+        <button onClick={SortLtoHR}>Sort: Ratings ( Low To HIGH)</button>
+       </div>
+      <div>
+        <Prods products={currprod} loading={loading} />
       </div>
-    );
+
+      <div id="btns">
+        <button onClick={handlePrev}>prev</button>
+        <button onClick={handleNext}>next</button>
+      </div>
+    </div>
+  );
 }
